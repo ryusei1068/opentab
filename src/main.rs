@@ -1,11 +1,10 @@
 use dialoguer::{theme::ColorfulTheme, FuzzySelect};
 use serde_json::Value;
 use std::collections::HashMap;
+use std::env;
 use std::fs::File;
 use std::io::BufReader;
 use std::process::exit;
-
-const FILE_PATH: &str = "./conf.json";
 
 #[derive(Debug)]
 struct OpenTab {
@@ -27,7 +26,7 @@ impl OpenTab {
 
     fn select(&self) -> Result<&String, String> {
         match FuzzySelect::with_theme(&ColorfulTheme::default())
-            .with_prompt("choose a site")
+            .with_prompt("sites")
             .items(&self.sites.names)
             .interact()
         {
@@ -55,8 +54,8 @@ struct Sites {
     names: Vec<String>,
 }
 
-fn read_file() -> Result<BufReader<File>, String> {
-    match File::open(FILE_PATH) {
+fn read_file(file_path: String) -> Result<BufReader<File>, String> {
+    match File::open(file_path) {
         Ok(file) => Ok(BufReader::new(file)),
         Err(e) => Err(format!("Cloud not open the conf.json. {:?}", e)),
     }
@@ -89,7 +88,9 @@ fn convert_site_map(value: Value) -> Option<Sites> {
 }
 
 fn main() {
-    let file = match read_file() {
+    let file_path = env::var("OPENTAB_CONF").expect("OPENTAB_CONF is not defined");
+
+    let file = match read_file(file_path) {
         Ok(f) => f,
         Err(e) => {
             println!("{:?}", e);
