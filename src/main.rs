@@ -44,7 +44,9 @@ impl OpenTab {
                     exit(1)
                 }
             };
-        };
+        } else {
+            println!("Not found: {}", name);
+        }
     }
 }
 
@@ -112,5 +114,10 @@ fn main() {
         exit(1)
     };
 
-    opentab.execute();
+    let args: Vec<String> = env::args().collect();
+    if args.len() >= 2 {
+        opentab.open_site(&args[1]);
+    } else {
+        opentab.execute();
+    }
 }
