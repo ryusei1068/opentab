@@ -1,4 +1,4 @@
-use dialoguer::{theme::ColorfulTheme, FuzzySelect};
+use fuzzy_select::FuzzySelect;
 use std::process::exit;
 
 use crate::sites::Sites;
@@ -18,16 +18,17 @@ impl OpenTab {
             Ok(site_name) => site_name,
             Err(_) => exit(1),
         };
-        self.open_site(site_name)
+        self.open_site(&site_name)
     }
 
-    pub fn select(&self) -> Result<&String, String> {
-        match FuzzySelect::with_theme(&ColorfulTheme::default())
+    pub fn select(&self) -> Result<String, String> {
+        let options = self.sites.names.clone();
+        match FuzzySelect::new()
             .with_prompt("sites")
-            .items(&self.sites.names)
-            .interact()
+            .with_options(options)
+            .select()
         {
-            Ok(selection) => Ok(&self.sites.names[selection]),
+            Ok(selection) => Ok(selection),
             Err(e) => Err(format!("{:?}", e)),
         }
     }
