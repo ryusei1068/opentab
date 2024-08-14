@@ -1,7 +1,6 @@
-use fuzzy_select::FuzzySelect;
-use std::process::exit;
-
 use crate::sites::Sites;
+use fuzzy_select::{ContentStyle, FuzzySelect, Stylize, Theme};
+use std::process::exit;
 
 #[derive(Debug)]
 pub struct OpenTab {
@@ -22,9 +21,19 @@ impl OpenTab {
     }
 
     pub fn select(&self) -> Result<String, String> {
+        let theme = Theme {
+            selected_indicator: '>'.blue().bold(),
+            indicator: ' '.reset(),
+            selected_text: ContentStyle::new().green().bold(),
+            text: ContentStyle::new(),
+            selected_highlight: ContentStyle::new().black().on_yellow(),
+            highlight: ContentStyle::new().dark_yellow().on_yellow(),
+        };
+
         let options = self.sites.names.clone();
         match FuzzySelect::new()
-            .with_prompt("sites")
+            .with_theme(theme)
+            .with_prompt(">")
             .with_options(options)
             .select()
         {
