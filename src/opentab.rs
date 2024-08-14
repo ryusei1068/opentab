@@ -24,10 +24,10 @@ impl OpenTab {
         let theme = Theme {
             selected_indicator: '>'.blue().bold(),
             indicator: ' '.reset(),
-            selected_text: ContentStyle::new().green().bold(),
+            selected_text: ContentStyle::new(),
             text: ContentStyle::new(),
-            selected_highlight: ContentStyle::new().black().on_yellow(),
-            highlight: ContentStyle::new().dark_yellow().on_yellow(),
+            selected_highlight: ContentStyle::new().dark_cyan().on_dark_grey(),
+            highlight: ContentStyle::new().grey(),
         };
 
         let options = self.sites.names.clone();
